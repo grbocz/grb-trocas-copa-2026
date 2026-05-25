@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { colecaoParaCompacto } from '../data/album';
 
 const STORAGE_KEY = 'trocas-copa-2026';
 
@@ -62,19 +63,11 @@ export function useColecao() {
 
   const exportar = useCallback(() => {
     const nomeExport = state.nome.trim() || 'sem_nome';
-    const agora = new Date();
-    const p = (n: number) => String(n).padStart(2, '0');
-    const dia  = p(agora.getDate());
-    const mes  = p(agora.getMonth() + 1);
-    const ano  = agora.getFullYear();
-    const hora = p(agora.getHours());
-    const min  = p(agora.getMinutes());
 
     const data = {
-      nome: nomeExport,
-      versao: '1',
-      exportadoEm: `${dia}/${mes}/${ano} ${hora}:${min}`,
-      colecao: state.colecao,
+      n: nomeExport,
+      v: '3',
+      c: colecaoParaCompacto(state.colecao),
     };
 
     const texto = JSON.stringify(data);

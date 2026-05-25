@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { SELECOES } from '../data/album';
+import { SELECOES, compactoParaColecao } from '../data/album';
 
 interface Props {
   colecao: Record<string, number>;
@@ -42,9 +42,24 @@ export default function Trocas({ colecao, onVoltar }: Props) {
       const inicio = texto.indexOf('{');
       const fim = texto.lastIndexOf('}');
       if (inicio === -1 || fim === -1) throw new Error();
-      const data = JSON.parse(texto.slice(inicio, fim + 1)) as ColecaoImportada;
-      if (!data.colecao || !data.nome) throw new Error();
-      setImportada(data);
+      const raw = JSON.parse(texto.slice(inicio, fim + 1));
+
+      let nome: string;
+      let colecao: Record<string, number>;
+
+      if (raw.n && raw.c) {
+        // formato compacto v3
+        nome = raw.n;
+        colecao = compactoParaColecao(raw.c);
+      } else if (raw.nome && raw.colecao) {
+        // formato antigo
+        nome = raw.nome;
+        colecao = raw.colecao;
+      } else {
+        throw new Error();
+      }
+
+      setImportada({ nome, versao: raw.v ?? raw.versao ?? '1', colecao });
       setErro('');
       setMostrarColar(false);
       setTextoColar('');

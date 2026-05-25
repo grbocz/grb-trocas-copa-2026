@@ -84,3 +84,23 @@ export function getTotalFigurinhas(): number {
   const deEspeciais = ESPECIAIS.reduce((acc, e) => acc + e.numeros.length, 0);
   return deSelecoes + deEspeciais;
 }
+
+// Lista fixa de todas as figurinhas na ordem de SELECOES (usada para codificação compacta)
+export const TODAS_FIGURINHAS: string[] = SELECOES.flatMap(s =>
+  Array.from({ length: FIGURINHAS_POR_SELECAO }, (_, i) => `${s.codigo}-${i + 1}`)
+);
+
+// Codifica a coleção como string de 960 dígitos (um por figurinha, 0-9)
+export function colecaoParaCompacto(colecao: Record<string, number>): string {
+  return TODAS_FIGURINHAS.map(f => Math.min(colecao[f] ?? 0, 9)).join('');
+}
+
+// Decodifica string compacta de volta para Record
+export function compactoParaColecao(compacto: string): Record<string, number> {
+  const colecao: Record<string, number> = {};
+  for (let i = 0; i < TODAS_FIGURINHAS.length && i < compacto.length; i++) {
+    const count = parseInt(compacto[i]);
+    if (count > 0) colecao[TODAS_FIGURINHAS[i]] = count;
+  }
+  return colecao;
+}
