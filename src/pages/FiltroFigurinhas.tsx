@@ -154,21 +154,25 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
             ←
           </button>
 
-          <div className="leading-tight flex-1 min-w-0">
-            <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
-            <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
-          </div>
-
           {/* Botão compartilhar — só para faltam e repetidas */}
           {(filtro === 'faltam' || filtro === 'repetidas') && secoes.length > 0 && (
             <button
               onClick={compartilhar}
-              className="flex-none w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 text-base transition-colors"
+              className="flex-none w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 transition-colors"
               title="Compartilhar lista"
             >
-              ↑
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
             </button>
           )}
+
+          <div className="leading-tight flex-1 min-w-0 text-center">
+            <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
+            <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
+          </div>
 
           {/* Switch Leitura / Edição */}
           <div className="flex-none flex items-center gap-1.5">
