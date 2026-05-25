@@ -147,8 +147,8 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
                         <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-400 rounded-full z-10 border border-white" />
                       )}
                       <div className={`border-2 rounded-lg flex flex-col items-center justify-between py-1.5 px-0.5 ${corCard(qtd)} ${modificado ? 'ring-2 ring-orange-400' : ''}`}>
-                        <span className="text-[11px] text-gray-600 font-medium leading-none">{codigo}</span>
-                        <span className={`text-2xl font-bold leading-none my-1 ${corContador(qtd)}`}>{qtd}</span>
+                        <span className="text-xs text-gray-600 font-semibold leading-none">{codigo}</span>
+                        <span className={`text-lg font-bold leading-none my-1 ${corContador(qtd)}`}>{qtd}</span>
                         <div className="flex gap-1.5">
                           <button
                             onClick={() => handleDecrementar(codigo)}
