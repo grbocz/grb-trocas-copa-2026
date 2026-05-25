@@ -25,3 +25,9 @@ dist-ssr
 
 # Claude
 .claude/
+
+.vercel
+
+# Capacitor Android build outputs
+android/.gradle
+android/app/build

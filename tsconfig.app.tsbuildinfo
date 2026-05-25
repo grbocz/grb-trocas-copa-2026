@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/figurinhacard.tsx","./src/components/figurinhaspanel.tsx","./src/components/selecoespanel.tsx","./src/data/album.ts","./src/hooks/usecolecao.ts","./src/pages/minhacolecao.tsx","./src/pages/trocas.tsx"],"version":"5.9.3"}
