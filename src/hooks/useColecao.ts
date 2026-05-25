@@ -94,7 +94,7 @@ export function useColecao() {
     };
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'text/plain' });
-    const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.json`;
+    const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.txt`;
 
     const file = new File([blob], filename, { type: 'text/plain' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {

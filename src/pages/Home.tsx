@@ -98,7 +98,7 @@ export default function Home({ colecao, onMinhaColecao, onTrocas, onFiltro, onRe
             <span className="text-lg opacity-80">→</span>
           </button>
 
-          <input ref={inputRef} type="file" accept=".json" onChange={handleBackupFile} className="hidden" />
+          <input ref={inputRef} type="file" accept=".json,.txt" onChange={handleBackupFile} className="hidden" />
           <button
             onClick={() => { setFeedbackBackup(''); inputRef.current?.click(); }}
             className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 rounded-xl py-4 text-sm font-bold active:opacity-80 transition-colors flex items-center justify-between px-5"

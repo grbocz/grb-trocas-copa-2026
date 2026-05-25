@@ -110,7 +110,7 @@ export default function Trocas({ colecao, onVoltar }: Props) {
           <input
             ref={inputRef}
             type="file"
-            accept=".json"
+            accept=".json,.txt"
             onChange={handleImport}
             className="hidden"
           />
