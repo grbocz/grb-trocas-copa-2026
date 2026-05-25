@@ -38,6 +38,11 @@ export default function Trocas({ colecao, onVoltar }: Props) {
   function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 100_000) {
+      setErro('Arquivo muito grande. Use um arquivo exportado pelo app.');
+      e.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
