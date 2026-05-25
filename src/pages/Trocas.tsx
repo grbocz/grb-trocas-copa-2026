@@ -3,6 +3,7 @@ import { SELECOES } from '../data/album';
 
 interface Props {
   colecao: Record<string, number>;
+  colecaoPreCarregada?: ColecaoImportada | null;
   onVoltar: () => void;
 }
 
@@ -29,8 +30,8 @@ function todasFigurinhas(): string[] {
 
 const TODAS = todasFigurinhas();
 
-export default function Trocas({ colecao, onVoltar }: Props) {
-  const [importada, setImportada] = useState<ColecaoImportada | null>(null);
+export default function Trocas({ colecao, colecaoPreCarregada, onVoltar }: Props) {
+  const [importada, setImportada] = useState<ColecaoImportada | null>(colecaoPreCarregada ?? null);
   const [erro, setErro] = useState('');
   const [copiado, setCopiado] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);

@@ -19,15 +19,20 @@ function loadFromStorage(): ColecaoState {
   return defaultState;
 }
 
-function downloadFile(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+export function colecaoParaUrl(data: { nome: string; versao: string; exportadoEm: string; colecao: Record<string, number> }): string {
+  const encoded = encodeURIComponent(JSON.stringify(data));
+  return `${window.location.origin}/?colecao=${encoded}`;
+}
+
+export function urlParaColecao(search: string): { nome: string; versao: string; colecao: Record<string, number> } | null {
+  try {
+    const params = new URLSearchParams(search);
+    const raw = params.get('colecao');
+    if (!raw) return null;
+    return JSON.parse(decodeURIComponent(raw));
+  } catch {
+    return null;
+  }
 }
 
 export function useColecao() {
@@ -83,8 +88,6 @@ export function useColecao() {
     const seg  = p(agora.getSeconds());
 
     const exportadoEm = `${dia}/${mes}/${ano} ${hora}:${min}:${seg}`;
-    const dataArquivo = `${dia}-${mes}-${ano}`;
-    const horaArquivo = `${hora}h${min}`;
 
     const data = {
       nome: nomeExport,
@@ -92,17 +95,16 @@ export function useColecao() {
       exportadoEm,
       colecao: state.colecao,
     };
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'text/plain' });
-    const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.txt`;
 
-    const file = new File([blob], filename, { type: 'text/plain' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    const url = colecaoParaUrl(data);
+    const titulo = `Coleção Copa 2026 - ${nomeExport}`;
+
+    if (navigator.share) {
       navigator
-        .share({ files: [file], title: 'Minha coleção Copa 2026' })
-        .catch(() => downloadFile(blob, filename));
+        .share({ url, title: titulo })
+        .catch(() => navigator.clipboard?.writeText(url));
     } else {
-      downloadFile(blob, filename);
+      navigator.clipboard?.writeText(url);
     }
   }, [state]);
 

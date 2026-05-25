@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useColecao } from './hooks/useColecao';
+import { useColecao, urlParaColecao } from './hooks/useColecao';
 import Home from './pages/Home';
 import MinhaColecao from './pages/MinhaColecao';
 import Trocas from './pages/Trocas';
@@ -7,9 +7,18 @@ import FiltroFigurinhas, { FiltroTipo } from './pages/FiltroFigurinhas';
 
 type Tela = 'home' | 'colecao' | 'trocas' | 'filtro';
 
+function lerColecaoDaUrl() {
+  const dados = urlParaColecao(window.location.search);
+  if (dados) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+  return dados;
+}
+
 export default function App() {
-  const [tela, setTela] = useState<Tela>('home');
+  const [tela, setTela] = useState<Tela>(() => urlParaColecao(window.location.search) ? 'trocas' : 'home');
   const [filtroAtivo, setFiltroAtivo] = useState<FiltroTipo>('tenho');
+  const [colecaoViaUrl] = useState(lerColecaoDaUrl);
   const { nome, colecao, getQuantidade, incrementar, decrementar, aplicarLote, restaurarBackup, setNome, exportar } =
     useColecao();
 
@@ -29,7 +38,7 @@ export default function App() {
   }
 
   if (tela === 'trocas') {
-    return <Trocas colecao={colecao} onVoltar={() => setTela('home')} />;
+    return <Trocas colecao={colecao} colecaoPreCarregada={colecaoViaUrl} onVoltar={() => setTela('home')} />;
   }
 
   if (tela === 'filtro') {
