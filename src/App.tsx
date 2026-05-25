@@ -10,7 +10,7 @@ type Tela = 'home' | 'colecao' | 'trocas' | 'filtro';
 export default function App() {
   const [tela, setTela] = useState<Tela>('home');
   const [filtroAtivo, setFiltroAtivo] = useState<FiltroTipo>('tenho');
-  const { nome, colecao, getQuantidade, incrementar, decrementar, aplicarLote, setNome, exportar } =
+  const { nome, colecao, getQuantidade, incrementar, decrementar, aplicarLote, restaurarBackup, setNome, exportar } =
     useColecao();
 
   if (tela === 'colecao') {
@@ -49,6 +49,7 @@ export default function App() {
       onMinhaColecao={() => setTela('colecao')}
       onTrocas={() => setTela('trocas')}
       onFiltro={(f) => { setFiltroAtivo(f); setTela('filtro'); }}
+      onRestaurarBackup={restaurarBackup}
     />
   );
 }

@@ -106,6 +106,10 @@ export function useColecao() {
     }
   }, [state]);
 
+  const restaurarBackup = useCallback((dados: { nome: string; colecao: Record<string, number> }) => {
+    setState({ nome: dados.nome, colecao: dados.colecao });
+  }, []);
+
   const aplicarLote = useCallback((lote: Record<string, number>) => {
     setState((prev) => {
       const novaColecao = { ...prev.colecao };
@@ -127,6 +131,7 @@ export function useColecao() {
     incrementar,
     decrementar,
     aplicarLote,
+    restaurarBackup,
     setNome,
     exportar,
   };
