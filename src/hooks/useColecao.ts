@@ -74,14 +74,17 @@ export function useColecao() {
   const exportar = useCallback(() => {
     const nomeExport = state.nome.trim() || 'sem_nome';
     const agora = new Date();
+    const p = (n: number) => String(n).padStart(2, '0');
+    const dia  = p(agora.getDate());
+    const mes  = p(agora.getMonth() + 1);
+    const ano  = agora.getFullYear();
+    const hora = p(agora.getHours());
+    const min  = p(agora.getMinutes());
+    const seg  = p(agora.getSeconds());
 
-    const exportadoEm = agora.toLocaleString('pt-BR', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-    });
-
-    const dataArquivo = agora.toLocaleDateString('pt-BR').replace(/\//g, '-');
-    const horaArquivo = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
+    const exportadoEm = `${dia}/${mes}/${ano} ${hora}:${min}:${seg}`;
+    const dataArquivo = `${dia}-${mes}-${ano}`;
+    const horaArquivo = `${hora}h${min}`;
 
     const data = {
       nome: nomeExport,
