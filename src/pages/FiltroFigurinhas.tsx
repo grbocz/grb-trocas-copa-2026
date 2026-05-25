@@ -54,8 +54,8 @@ interface Secao {
 
 export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVoltar }: Props) {
   const [rascunho, setRascunho] = useState<Record<string, number>>({});
+  const [modoEdicao, setModoEdicao] = useState(false);
 
-  // Valor efetivo = rascunho se alterado, senão colecao
   function getValor(codigo: string): number {
     return codigo in rascunho ? rascunho[codigo] : (colecao[codigo] ?? 0);
   }
@@ -79,7 +79,14 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
     setRascunho({});
   }
 
-  // Lista baseada no colecao original — não muda enquanto não confirmar
+  function toggleModo() {
+    // Ao sair do modo edição com pendentes, descarta automaticamente
+    if (modoEdicao && Object.keys(rascunho).length > 0) {
+      descartar();
+    }
+    setModoEdicao((v) => !v);
+  }
+
   const secoes = useMemo<Secao[]>(() => {
     const resultado: Secao[] = [];
     for (const grupo of GRUPOS) {
@@ -101,28 +108,50 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
 
   const totalCards = secoes.reduce((acc, s) => acc + s.codigos.length, 0);
   const totalAlteracoes = Object.keys(rascunho).length;
+  const temAlteracoes = modoEdicao && totalAlteracoes > 0;
   const vazio = VAZIOS[filtro];
-  const temAlteracoes = totalAlteracoes > 0;
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
-      <header className={`flex-none ${CORES_HEADER[filtro]} text-white px-3 py-2 shadow-md flex items-center gap-3`}>
-        <button
-          onClick={onVoltar}
-          className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 text-lg font-bold transition-colors"
-        >
-          ←
-        </button>
-        <div className="leading-tight flex-1">
-          <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
-          <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
-        </div>
-        {temAlteracoes && (
-          <div className="bg-orange-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-            {totalAlteracoes} pendente{totalAlteracoes !== 1 ? 's' : ''}
+      <header className={`flex-none ${CORES_HEADER[filtro]} text-white px-3 py-2 shadow-md`}>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onVoltar}
+            className="w-8 h-8 flex-none flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 text-lg font-bold transition-colors"
+          >
+            ←
+          </button>
+
+          <div className="leading-tight flex-1 min-w-0">
+            <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
+            <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
           </div>
-        )}
+
+          {/* Switch Leitura / Edição */}
+          <div className="flex-none flex items-center gap-1.5">
+            <span className={`text-[10px] font-medium transition-opacity ${modoEdicao ? 'opacity-50' : 'opacity-100'}`}>
+              Leitura
+            </span>
+            <button
+              onClick={toggleModo}
+              className={`relative w-10 h-5 rounded-full transition-colors ${modoEdicao ? 'bg-orange-400' : 'bg-white/30'}`}
+            >
+              <span
+                className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${modoEdicao ? 'left-5' : 'left-0.5'}`}
+              />
+            </button>
+            <span className={`text-[10px] font-medium transition-opacity ${modoEdicao ? 'opacity-100' : 'opacity-50'}`}>
+              Edição
+            </span>
+          </div>
+
+          {temAlteracoes && (
+            <div className="flex-none bg-orange-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+              {totalAlteracoes}
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Lista */}
@@ -136,45 +165,64 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
           secoes.map((secao) => (
             <div key={secao.titulo}>
               <h3 className="text-xs font-bold text-gray-500 mb-2 px-1">{secao.titulo}</h3>
-              <div className="grid grid-cols-3 gap-2">
-                {secao.codigos.map((codigo) => {
-                  const qtd = getValor(codigo);
-                  const modificado = codigo in rascunho;
-                  return (
-                    <div key={codigo} className="relative">
-                      {/* Indicador de alteração pendente */}
-                      {modificado && (
-                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-400 rounded-full z-10 border border-white" />
-                      )}
-                      <div className={`border-2 rounded-lg flex flex-col items-center justify-between py-1.5 px-0.5 ${corCard(qtd)} ${modificado ? 'ring-2 ring-orange-400' : ''}`}>
-                        <span className="text-xs text-gray-600 font-semibold leading-none">{codigo}</span>
-                        <span className={`text-lg font-bold leading-none my-1 ${corContador(qtd)}`}>{qtd}</span>
-                        <div className="flex gap-1.5">
-                          <button
-                            onClick={() => handleDecrementar(codigo)}
-                            disabled={qtd === 0}
-                            className="w-7 h-7 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center active:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed shadow-sm leading-none"
-                          >
-                            −
-                          </button>
-                          <button
-                            onClick={() => handleIncrementar(codigo)}
-                            className="w-7 h-7 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center active:bg-gray-100 shadow-sm leading-none"
-                          >
-                            +
-                          </button>
+
+              {modoEdicao ? (
+                /* Modo edição — 3 colunas com botões +/− */
+                <div className="grid grid-cols-3 gap-2">
+                  {secao.codigos.map((codigo) => {
+                    const qtd = getValor(codigo);
+                    const modificado = codigo in rascunho;
+                    return (
+                      <div key={codigo} className="relative">
+                        {modificado && (
+                          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-400 rounded-full z-10 border border-white" />
+                        )}
+                        <div className={`border-2 rounded-lg flex flex-col items-center justify-between py-1.5 px-0.5 ${corCard(qtd)} ${modificado ? 'ring-2 ring-orange-400' : ''}`}>
+                          <span className="text-xs text-gray-600 font-semibold leading-none">{codigo}</span>
+                          <span className={`text-lg font-bold leading-none my-1 ${corContador(qtd)}`}>{qtd}</span>
+                          <div className="flex gap-1.5">
+                            <button
+                              onClick={() => handleDecrementar(codigo)}
+                              disabled={qtd === 0}
+                              className="w-7 h-7 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center active:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed shadow-sm leading-none"
+                            >
+                              −
+                            </button>
+                            <button
+                              onClick={() => handleIncrementar(codigo)}
+                              className="w-7 h-7 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center active:bg-gray-100 shadow-sm leading-none"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                /* Modo leitura — 5 colunas, cards compactos sem botões */
+                <div className="grid grid-cols-5 gap-1.5">
+                  {secao.codigos.map((codigo) => {
+                    const qtd = colecao[codigo] ?? 0;
+                    return (
+                      <div
+                        key={codigo}
+                        className={`border-2 rounded-lg flex flex-col items-center justify-center py-1.5 px-0.5 ${corCard(qtd)}`}
+                      >
+                        <span className="text-[10px] text-gray-600 font-semibold leading-none text-center">{codigo}</span>
+                        <span className={`text-sm font-bold leading-none mt-0.5 ${corContador(qtd)}`}>{qtd}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ))
         )}
       </div>
 
-      {/* Footer de confirmação — aparece apenas quando há alterações */}
+      {/* Footer de confirmação */}
       {temAlteracoes && (
         <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 flex gap-3 shadow-lg">
           <button
