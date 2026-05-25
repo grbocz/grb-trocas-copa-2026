@@ -19,22 +19,6 @@ function loadFromStorage(): ColecaoState {
   return defaultState;
 }
 
-export function colecaoParaUrl(data: { nome: string; versao: string; exportadoEm: string; colecao: Record<string, number> }): string {
-  const encoded = encodeURIComponent(JSON.stringify(data));
-  return `${window.location.origin}/?colecao=${encoded}`;
-}
-
-export function urlParaColecao(search: string): { nome: string; versao: string; colecao: Record<string, number> } | null {
-  try {
-    const params = new URLSearchParams(search);
-    const raw = params.get('colecao');
-    if (!raw) return null;
-    return JSON.parse(decodeURIComponent(raw));
-  } catch {
-    return null;
-  }
-}
-
 export function useColecao() {
   const [state, setState] = useState<ColecaoState>(loadFromStorage);
 
@@ -85,26 +69,22 @@ export function useColecao() {
     const ano  = agora.getFullYear();
     const hora = p(agora.getHours());
     const min  = p(agora.getMinutes());
-    const seg  = p(agora.getSeconds());
-
-    const exportadoEm = `${dia}/${mes}/${ano} ${hora}:${min}:${seg}`;
 
     const data = {
       nome: nomeExport,
       versao: '1',
-      exportadoEm,
+      exportadoEm: `${dia}/${mes}/${ano} ${hora}:${min}`,
       colecao: state.colecao,
     };
 
-    const url = colecaoParaUrl(data);
-    const titulo = `Coleção Copa 2026 - ${nomeExport}`;
+    const texto = JSON.stringify(data);
 
     if (navigator.share) {
       navigator
-        .share({ url, title: titulo })
-        .catch(() => navigator.clipboard?.writeText(url));
+        .share({ text: texto, title: `Coleção Copa 2026 - ${nomeExport}` })
+        .catch(() => navigator.clipboard?.writeText(texto));
     } else {
-      navigator.clipboard?.writeText(url);
+      navigator.clipboard?.writeText(texto);
     }
   }, [state]);
 
