@@ -8,14 +8,14 @@ interface Props {
 export default function FigurinhaCard({ codigo, quantidade, onIncrementar, onDecrementar }: Props) {
   const bgBorder =
     quantidade === 0
-      ? 'bg-red-50 border-red-400'
+      ? 'bg-red-200 border-red-600'
       : quantidade === 1
-        ? 'bg-green-50 border-green-400'
-        : 'bg-blue-50 border-blue-400';
+        ? 'bg-green-200 border-green-600'
+        : 'bg-blue-200 border-blue-600';
 
   const counterColor =
     quantidade === 0
-      ? 'text-red-600'
+      ? 'text-red-700'
       : quantidade === 1
         ? 'text-green-700'
         : 'text-blue-700';

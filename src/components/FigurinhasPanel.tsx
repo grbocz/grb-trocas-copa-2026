@@ -19,15 +19,15 @@ export default function FigurinhasPanel({ selecaoAtiva, getQuantidade, increment
         </h2>
         <div className="flex gap-2.5 mt-1 flex-wrap">
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded bg-red-50 border border-red-400 inline-block flex-none" />
+            <span className="w-2.5 h-2.5 rounded bg-red-200 border border-red-600 inline-block flex-none" />
             <span className="text-[9px] text-gray-500">0 = falta</span>
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded bg-green-50 border border-green-400 inline-block flex-none" />
+            <span className="w-2.5 h-2.5 rounded bg-green-200 border border-green-600 inline-block flex-none" />
             <span className="text-[9px] text-gray-500">1 = tenho</span>
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded bg-blue-50 border border-blue-400 inline-block flex-none" />
+            <span className="w-2.5 h-2.5 rounded bg-blue-200 border border-blue-600 inline-block flex-none" />
             <span className="text-[9px] text-gray-500">2+ = repetida</span>
           </span>
         </div>
