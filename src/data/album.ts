@@ -78,3 +78,9 @@ export const ESPECIAIS: SecaoEspecial[] = [
     numeros: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
   },
 ];
+
+export function getTotalFigurinhas(): number {
+  const deSelecoes = SELECOES.length * FIGURINHAS_POR_SELECAO;
+  const deEspeciais = ESPECIAIS.reduce((acc, e) => acc + e.numeros.length, 0);
+  return deSelecoes + deEspeciais;
+}

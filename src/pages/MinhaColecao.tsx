@@ -10,6 +10,7 @@ interface Props {
   decrementar: (figurinha: string) => void;
   setNome: (nome: string) => void;
   exportar: () => void;
+  onHome: () => void;
   onVerTrocas: () => void;
 }
 
@@ -20,6 +21,7 @@ export default function MinhaColecao({
   decrementar,
   setNome,
   exportar,
+  onHome,
   onVerTrocas,
 }: Props) {
   const [selecaoAtiva, setSelecaoAtiva] = useState('BRA');
@@ -29,11 +31,23 @@ export default function MinhaColecao({
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
       <header className="flex-none bg-blue-600 text-white px-3 py-2 shadow-md">
-        <div className="flex items-center justify-between gap-2">
-          <div className="leading-tight">
+        <div className="flex items-center gap-2">
+          {/* Botão home */}
+          <button
+            onClick={onHome}
+            className="flex-none w-8 h-8 flex items-center justify-center rounded-lg bg-blue-500 hover:bg-blue-400 active:bg-blue-700 transition-colors text-base"
+            aria-label="Menu principal"
+          >
+            ⌂
+          </button>
+
+          {/* Título */}
+          <div className="flex-1 leading-tight min-w-0">
             <div className="text-xs font-bold tracking-wide">MINHA COLEÇÃO</div>
-            <div className="text-[10px] opacity-75">Copa do Mundo 2026</div>
+            <div className="text-[10px] opacity-75">Copa 2026</div>
           </div>
+
+          {/* Nome */}
           <div className="flex items-center gap-1.5 flex-none">
             <span className="text-[10px] opacity-75">Nome:</span>
             <input
