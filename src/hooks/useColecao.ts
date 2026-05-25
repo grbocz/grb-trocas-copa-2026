@@ -73,14 +73,25 @@ export function useColecao() {
 
   const exportar = useCallback(() => {
     const nomeExport = state.nome.trim() || 'sem_nome';
+    const agora = new Date();
+
+    const exportadoEm = agora.toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    });
+
+    const dataArquivo = agora.toLocaleDateString('pt-BR').replace(/\//g, '-');
+    const horaArquivo = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
+
     const data = {
       nome: nomeExport,
       versao: '1',
+      exportadoEm,
       colecao: state.colecao,
     };
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
-    const filename = `colecao_${nomeExport}.json`;
+    const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.json`;
 
     if (navigator.share) {
       const file = new File([blob], filename, { type: 'application/json' });
