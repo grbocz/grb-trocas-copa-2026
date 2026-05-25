@@ -92,12 +92,27 @@ export function useColecao() {
     }
   }, [state]);
 
+  const aplicarLote = useCallback((lote: Record<string, number>) => {
+    setState((prev) => {
+      const novaColecao = { ...prev.colecao };
+      for (const [figurinha, quantidade] of Object.entries(lote)) {
+        if (quantidade <= 0) {
+          delete novaColecao[figurinha];
+        } else {
+          novaColecao[figurinha] = quantidade;
+        }
+      }
+      return { ...prev, colecao: novaColecao };
+    });
+  }, []);
+
   return {
     nome: state.nome,
     colecao: state.colecao,
     getQuantidade,
     incrementar,
     decrementar,
+    aplicarLote,
     setNome,
     exportar,
   };

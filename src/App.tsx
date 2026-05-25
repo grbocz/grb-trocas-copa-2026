@@ -10,7 +10,7 @@ type Tela = 'home' | 'colecao' | 'trocas' | 'filtro';
 export default function App() {
   const [tela, setTela] = useState<Tela>('home');
   const [filtroAtivo, setFiltroAtivo] = useState<FiltroTipo>('tenho');
-  const { nome, colecao, getQuantidade, incrementar, decrementar, setNome, exportar } =
+  const { nome, colecao, getQuantidade, incrementar, decrementar, aplicarLote, setNome, exportar } =
     useColecao();
 
   if (tela === 'colecao') {
@@ -37,8 +37,7 @@ export default function App() {
       <FiltroFigurinhas
         filtro={filtroAtivo}
         colecao={colecao}
-        incrementar={incrementar}
-        decrementar={decrementar}
+        aplicarLote={aplicarLote}
         onVoltar={() => setTela('home')}
       />
     );
