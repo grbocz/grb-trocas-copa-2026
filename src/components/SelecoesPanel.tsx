@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { Selecao } from '../data/album';
+import { Selecao, SecaoEspecial } from '../data/album';
 
 interface Props {
   selecoes: Selecao[];
   grupos: string[];
+  especiais: SecaoEspecial[];
   selecaoAtiva: string;
   ordenacao: 'grupos' | 'az';
   onSelecionar: (codigo: string) => void;
@@ -11,12 +12,13 @@ interface Props {
 }
 
 interface CardProps {
-  selecao: Selecao;
+  codigo: string;
+  nome: string;
   ativa: boolean;
   onClick: () => void;
 }
 
-function SelecaoCard({ selecao, ativa, onClick }: CardProps) {
+function ItemCard({ codigo, nome, ativa, onClick }: CardProps) {
   return (
     <button
       onClick={onClick}
@@ -25,9 +27,9 @@ function SelecaoCard({ selecao, ativa, onClick }: CardProps) {
       }`}
     >
       <div className={`text-sm font-bold leading-tight ${ativa ? 'text-blue-700' : 'text-gray-800'}`}>
-        {selecao.codigo}
+        {codigo}
       </div>
-      <div className="text-[8px] text-gray-400 truncate leading-tight">{selecao.nome}</div>
+      <div className="text-[8px] text-gray-400 truncate leading-tight">{nome}</div>
     </button>
   );
 }
@@ -35,6 +37,7 @@ function SelecaoCard({ selecao, ativa, onClick }: CardProps) {
 export default function SelecoesPanel({
   selecoes,
   grupos,
+  especiais,
   selecaoAtiva,
   ordenacao,
   onSelecionar,
@@ -51,6 +54,25 @@ export default function SelecoesPanel({
   const emAZ = useMemo(
     () => [...selecoes].sort((a, b) => a.codigo.localeCompare(b.codigo)),
     [selecoes]
+  );
+
+  const secaoEspeciais = (
+    <div>
+      <div className="px-2 py-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 border-b border-amber-100 uppercase tracking-wide">
+        Especiais
+      </div>
+      <div className="grid grid-cols-2">
+        {especiais.map((e) => (
+          <ItemCard
+            key={e.codigo}
+            codigo={e.codigo}
+            nome={e.nome}
+            ativa={selecaoAtiva === e.codigo}
+            onClick={() => onSelecionar(e.codigo)}
+          />
+        ))}
+      </div>
+    </div>
   );
 
   return (
@@ -77,37 +99,45 @@ export default function SelecoesPanel({
         </div>
       </div>
 
-      {/* Lista de seleções */}
+      {/* Lista de seleções + especiais */}
       <div className="flex-1 overflow-y-auto">
         {ordenacao === 'grupos' ? (
-          grupos.map((g) => (
-            <div key={g}>
-              <div className="px-2 py-0.5 text-[10px] font-bold text-gray-400 bg-gray-50 border-b border-gray-100 uppercase tracking-wide">
-                Grupo {g}
+          <>
+            {grupos.map((g) => (
+              <div key={g}>
+                <div className="px-2 py-0.5 text-[10px] font-bold text-gray-400 bg-gray-50 border-b border-gray-100 uppercase tracking-wide">
+                  Grupo {g}
+                </div>
+                <div className="grid grid-cols-2">
+                  {porGrupo[g].map((s) => (
+                    <ItemCard
+                      key={s.codigo}
+                      codigo={s.codigo}
+                      nome={s.nome}
+                      ativa={selecaoAtiva === s.codigo}
+                      onClick={() => onSelecionar(s.codigo)}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-2">
-                {porGrupo[g].map((s) => (
-                  <SelecaoCard
-                    key={s.codigo}
-                    selecao={s}
-                    ativa={selecaoAtiva === s.codigo}
-                    onClick={() => onSelecionar(s.codigo)}
-                  />
-                ))}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="grid grid-cols-2">
-            {emAZ.map((s) => (
-              <SelecaoCard
-                key={s.codigo}
-                selecao={s}
-                ativa={selecaoAtiva === s.codigo}
-                onClick={() => onSelecionar(s.codigo)}
-              />
             ))}
-          </div>
+            {secaoEspeciais}
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-2">
+              {emAZ.map((s) => (
+                <ItemCard
+                  key={s.codigo}
+                  codigo={s.codigo}
+                  nome={s.nome}
+                  ativa={selecaoAtiva === s.codigo}
+                  onClick={() => onSelecionar(s.codigo)}
+                />
+              ))}
+            </div>
+            {secaoEspeciais}
+          </>
         )}
       </div>
     </aside>

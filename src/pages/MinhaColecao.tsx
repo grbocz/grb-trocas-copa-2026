@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SELECOES, GRUPOS } from '../data/album';
+import { SELECOES, GRUPOS, ESPECIAIS } from '../data/album';
 import SelecoesPanel from '../components/SelecoesPanel';
 import FigurinhasPanel from '../components/FigurinhasPanel';
 
@@ -52,6 +52,7 @@ export default function MinhaColecao({
         <SelecoesPanel
           selecoes={SELECOES}
           grupos={GRUPOS}
+          especiais={ESPECIAIS}
           selecaoAtiva={selecaoAtiva}
           ordenacao={ordenacao}
           onSelecionar={setSelecaoAtiva}
