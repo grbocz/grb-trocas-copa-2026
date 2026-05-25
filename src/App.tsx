@@ -37,6 +37,8 @@ export default function App() {
       <FiltroFigurinhas
         filtro={filtroAtivo}
         colecao={colecao}
+        incrementar={incrementar}
+        decrementar={decrementar}
         onVoltar={() => setTela('home')}
       />
     );

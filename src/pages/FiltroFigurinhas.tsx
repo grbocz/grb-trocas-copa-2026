@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 import { SELECOES, GRUPOS, ESPECIAIS, FIGURINHAS_POR_SELECAO } from '../data/album';
+import FigurinhaCard from '../components/FigurinhaCard';
 
 export type FiltroTipo = 'tenho' | 'faltam' | 'repetidas';
 
 interface Props {
   filtro: FiltroTipo;
   colecao: Record<string, number>;
+  incrementar: (figurinha: string) => void;
+  decrementar: (figurinha: string) => void;
   onVoltar: () => void;
 }
 
@@ -15,10 +18,10 @@ const TITULOS: Record<FiltroTipo, string> = {
   repetidas: 'Repetidas',
 };
 
-const CORES: Record<FiltroTipo, { header: string; chip: string; count: string }> = {
-  tenho:     { header: 'bg-green-600',  chip: 'bg-green-100 border-green-500 text-green-800',  count: 'text-green-600' },
-  faltam:    { header: 'bg-red-600',    chip: 'bg-red-100 border-red-500 text-red-800',        count: 'text-red-500'   },
-  repetidas: { header: 'bg-blue-600',   chip: 'bg-blue-100 border-blue-500 text-blue-800',     count: 'text-blue-600'  },
+const CORES_HEADER: Record<FiltroTipo, string> = {
+  tenho:     'bg-green-600',
+  faltam:    'bg-red-600',
+  repetidas: 'bg-blue-600',
 };
 
 function matchFiltro(quantidade: number, filtro: FiltroTipo): boolean {
@@ -30,50 +33,52 @@ function matchFiltro(quantidade: number, filtro: FiltroTipo): boolean {
 
 interface Secao {
   titulo: string;
-  itens: { codigo: string; quantidade: number }[];
+  codigos: string[];
 }
 
-export default function FiltroFigurinhas({ filtro, colecao, onVoltar }: Props) {
+const VAZIOS: Record<FiltroTipo, { icon: string; texto: string }> = {
+  tenho:     { icon: '📦', texto: 'Nenhuma figurinha marcada ainda' },
+  faltam:    { icon: '✅', texto: 'Coleção completa!' },
+  repetidas: { icon: '🎉', texto: 'Nenhuma repetida por enquanto' },
+};
+
+export default function FiltroFigurinhas({ filtro, colecao, incrementar, decrementar, onVoltar }: Props) {
   const secoes = useMemo<Secao[]>(() => {
     const resultado: Secao[] = [];
 
     for (const grupo of GRUPOS) {
-      const selecoes = SELECOES.filter((s) => s.grupo === grupo);
-      for (const selecao of selecoes) {
-        const itens = Array.from({ length: FIGURINHAS_POR_SELECAO }, (_, i) => {
+      for (const selecao of SELECOES.filter((s) => s.grupo === grupo)) {
+        const codigos = Array.from({ length: FIGURINHAS_POR_SELECAO }, (_, i) => {
           const codigo = `${selecao.codigo}-${i + 1}`;
-          const quantidade = colecao[codigo] ?? 0;
-          return { codigo, quantidade };
-        }).filter((item) => matchFiltro(item.quantidade, filtro));
+          return matchFiltro(colecao[codigo] ?? 0, filtro) ? codigo : null;
+        }).filter(Boolean) as string[];
 
-        if (itens.length > 0) {
-          resultado.push({ titulo: `${selecao.codigo} — ${selecao.nome}`, itens });
+        if (codigos.length > 0) {
+          resultado.push({ titulo: `${selecao.codigo} — ${selecao.nome}`, codigos });
         }
       }
     }
 
     for (const especial of ESPECIAIS) {
-      const itens = especial.numeros.map((n) => {
-        const codigo = `${especial.codigo}-${n}`;
-        const quantidade = colecao[codigo] ?? 0;
-        return { codigo, quantidade };
-      }).filter((item) => matchFiltro(item.quantidade, filtro));
+      const codigos = especial.numeros
+        .map((n) => `${especial.codigo}-${n}`)
+        .filter((c) => matchFiltro(colecao[c] ?? 0, filtro));
 
-      if (itens.length > 0) {
-        resultado.push({ titulo: especial.nome, itens });
+      if (codigos.length > 0) {
+        resultado.push({ titulo: especial.nome, codigos });
       }
     }
 
     return resultado;
   }, [filtro, colecao]);
 
-  const total = secoes.reduce((acc, s) => acc + s.itens.length, 0);
-  const cores = CORES[filtro];
+  const total = secoes.reduce((acc, s) => acc + s.codigos.length, 0);
+  const vazio = VAZIOS[filtro];
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
-      <header className={`flex-none ${cores.header} text-white px-3 py-2 shadow-md flex items-center gap-3`}>
+      <header className={`flex-none ${CORES_HEADER[filtro]} text-white px-3 py-2 shadow-md flex items-center gap-3`}>
         <button
           onClick={onVoltar}
           className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 text-lg font-bold transition-colors"
@@ -86,36 +91,26 @@ export default function FiltroFigurinhas({ filtro, colecao, onVoltar }: Props) {
         </div>
       </header>
 
-      {/* Lista agrupada */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      {/* Lista */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-4">
         {secoes.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-4xl mb-3">
-              {filtro === 'tenho' ? '📦' : filtro === 'faltam' ? '✅' : '🎉'}
-            </div>
-            <p className="text-gray-400 text-sm">
-              {filtro === 'tenho'
-                ? 'Nenhuma figurinha marcada ainda'
-                : filtro === 'faltam'
-                  ? 'Coleção completa!'
-                  : 'Nenhuma repetida por enquanto'}
-            </p>
+            <div className="text-4xl mb-3">{vazio.icon}</div>
+            <p className="text-gray-400 text-sm">{vazio.texto}</p>
           </div>
         ) : (
           secoes.map((secao) => (
-            <div key={secao.titulo} className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
-              <h3 className="text-xs font-bold text-gray-600 mb-2">{secao.titulo}</h3>
-              <div className="flex flex-wrap gap-1.5">
-                {secao.itens.map((item) => (
-                  <span
-                    key={item.codigo}
-                    className={`inline-flex items-center gap-1 border rounded px-1.5 py-0.5 text-[11px] font-medium ${cores.chip}`}
-                  >
-                    {item.codigo}
-                    {filtro === 'repetidas' && (
-                      <span className={`text-[9px] font-bold ${cores.count}`}>×{item.quantidade}</span>
-                    )}
-                  </span>
+            <div key={secao.titulo}>
+              <h3 className="text-xs font-bold text-gray-500 mb-2 px-1">{secao.titulo}</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {secao.codigos.map((codigo) => (
+                  <FigurinhaCard
+                    key={codigo}
+                    codigo={codigo}
+                    quantidade={colecao[codigo] ?? 0}
+                    onIncrementar={() => incrementar(codigo)}
+                    onDecrementar={() => decrementar(codigo)}
+                  />
                 ))}
               </div>
             </div>
