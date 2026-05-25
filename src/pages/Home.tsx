@@ -1,14 +1,16 @@
 import { getTotalFigurinhas } from '../data/album';
+import { FiltroTipo } from './FiltroFigurinhas';
 
 interface Props {
   colecao: Record<string, number>;
   onMinhaColecao: () => void;
   onTrocas: () => void;
+  onFiltro: (filtro: FiltroTipo) => void;
 }
 
 const TOTAL = getTotalFigurinhas();
 
-export default function Home({ colecao, onMinhaColecao, onTrocas }: Props) {
+export default function Home({ colecao, onMinhaColecao, onTrocas, onFiltro }: Props) {
   const valores = Object.values(colecao);
   const tenho = valores.filter((v) => v >= 1).length;
   const repetidas = valores.filter((v) => v >= 2).length;
@@ -41,20 +43,32 @@ export default function Home({ colecao, onMinhaColecao, onTrocas }: Props) {
           </p>
         </div>
 
-        {/* Totalizadores */}
+        {/* Totalizadores — clicáveis */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+          <button
+            onClick={() => onFiltro('tenho')}
+            className="bg-green-50 border border-green-200 rounded-xl p-3 text-center active:bg-green-100 transition-colors"
+          >
             <div className="text-2xl font-bold text-green-700">{tenho}</div>
             <div className="text-[10px] text-green-600 font-medium mt-0.5">Já tenho</div>
-          </div>
-          <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-center">
+            <div className="text-[9px] text-green-400 mt-1">ver lista →</div>
+          </button>
+          <button
+            onClick={() => onFiltro('faltam')}
+            className="bg-red-50 border border-red-200 rounded-xl p-3 text-center active:bg-red-100 transition-colors"
+          >
             <div className="text-2xl font-bold text-red-600">{faltam}</div>
             <div className="text-[10px] text-red-500 font-medium mt-0.5">Faltam</div>
-          </div>
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
+            <div className="text-[9px] text-red-300 mt-1">ver lista →</div>
+          </button>
+          <button
+            onClick={() => onFiltro('repetidas')}
+            className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center active:bg-blue-100 transition-colors"
+          >
             <div className="text-2xl font-bold text-blue-700">{repetidas}</div>
             <div className="text-[10px] text-blue-600 font-medium mt-0.5">Repetidas</div>
-          </div>
+            <div className="text-[9px] text-blue-300 mt-1">ver lista →</div>
+          </button>
         </div>
 
         {/* Navegação */}
