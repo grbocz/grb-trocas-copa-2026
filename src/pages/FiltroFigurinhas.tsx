@@ -178,8 +178,8 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
                           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-400 rounded-full z-10 border border-white" />
                         )}
                         <div className={`border-2 rounded-lg flex flex-col items-center justify-between py-1.5 px-0.5 ${corCard(qtd)} ${modificado ? 'ring-2 ring-orange-400' : ''}`}>
-                          <span className="text-xs text-gray-600 font-semibold leading-none">{codigo}</span>
-                          <span className={`text-lg font-bold leading-none my-1 ${corContador(qtd)}`}>{qtd}</span>
+                          <span className="text-[13px] text-gray-600 font-semibold leading-none">{codigo}</span>
+                          <span className={`text-base font-bold leading-none my-1 ${corContador(qtd)}`}>{qtd}</span>
                           <div className="flex gap-1.5">
                             <button
                               onClick={() => handleDecrementar(codigo)}
@@ -210,8 +210,8 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
                         key={codigo}
                         className={`border-2 rounded-lg flex flex-col items-center justify-center py-1.5 px-0.5 ${corCard(qtd)}`}
                       >
-                        <span className="text-[10px] text-gray-600 font-semibold leading-none text-center">{codigo}</span>
-                        <span className={`text-sm font-bold leading-none mt-0.5 ${corContador(qtd)}`}>{qtd}</span>
+                        <span className="text-[11px] text-gray-600 font-semibold leading-none text-center">{codigo}</span>
+                        <span className={`text-xs font-bold leading-none mt-0.5 ${corContador(qtd)}`}>{qtd}</span>
                       </div>
                     );
                   })}
