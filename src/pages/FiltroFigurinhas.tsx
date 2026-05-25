@@ -205,13 +205,14 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
                 <div className="grid grid-cols-5 gap-1.5">
                   {secao.codigos.map((codigo) => {
                     const qtd = colecao[codigo] ?? 0;
+                    const label = filtro === 'repetidas' ? `+${qtd - 1}` : String(qtd);
                     return (
                       <div
                         key={codigo}
                         className={`border-2 rounded-lg flex flex-col items-center justify-center py-1.5 px-0.5 ${corCard(qtd)}`}
                       >
                         <span className="text-[11px] text-gray-600 font-semibold leading-none text-center">{codigo}</span>
-                        <span className={`text-xs font-bold leading-none mt-0.5 ${corContador(qtd)}`}>{qtd}</span>
+                        <span className={`text-xs font-bold leading-none mt-0.5 ${corContador(qtd)}`}>{label}</span>
                       </div>
                     );
                   })}
