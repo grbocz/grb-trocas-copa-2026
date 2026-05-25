@@ -22,8 +22,8 @@ export default function FigurinhaCard({ codigo, quantidade, onIncrementar, onDec
 
   return (
     <div className={`border rounded-lg flex flex-col items-center justify-between py-1 px-0.5 ${bgBorder}`}>
-      <span className="text-[9px] text-gray-500 font-medium leading-none">{codigo}</span>
-      <span className={`text-xl font-bold leading-none my-0.5 ${counterColor}`}>{quantidade}</span>
+      <span className="text-[11px] text-gray-500 font-medium leading-none">{codigo}</span>
+      <span className={`text-2xl font-bold leading-none my-0.5 ${counterColor}`}>{quantidade}</span>
       <div className="flex gap-1">
         <button
           onClick={onDecrementar}

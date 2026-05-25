@@ -11,9 +11,9 @@ const NUMEROS = Array.from({ length: 20 }, (_, i) => i + 1);
 
 export default function FigurinhasPanel({ selecaoAtiva, getQuantidade, incrementar, decrementar }: Props) {
   return (
-    <section className="flex-1 flex flex-col min-w-0 bg-gray-50 overflow-hidden">
+    <section className="flex-1 flex flex-col min-w-0 bg-gray-50 overflow-hidden px-2">
       {/* Subtítulo e legenda — fixos no topo */}
-      <div className="flex-none px-2 pt-2 pb-1.5">
+      <div className="flex-none pt-2 pb-1.5">
         <h2 className="text-xs font-semibold text-gray-700 leading-none">
           {selecaoAtiva}-1 até {selecaoAtiva}-20
         </h2>
@@ -33,22 +33,23 @@ export default function FigurinhasPanel({ selecaoAtiva, getQuantidade, increment
         </div>
       </div>
 
-      {/* Grid de figurinhas — 3 colunas, scroll vertical quando necessário */}
-      <div className="flex-1 overflow-y-auto px-2 pb-2">
-        <div className="grid grid-cols-3 gap-1.5">
-          {NUMEROS.map((n) => {
-            const codigo = `${selecaoAtiva}-${n}`;
-            return (
-              <FigurinhaCard
-                key={codigo}
-                codigo={codigo}
-                quantidade={getQuantidade(codigo)}
-                onIncrementar={() => incrementar(codigo)}
-                onDecrementar={() => decrementar(codigo)}
-              />
-            );
-          })}
-        </div>
+      {/* Grid preenche a altura disponível — nunca exige scroll */}
+      <div
+        className="flex-1 min-h-0 grid grid-cols-3 gap-1.5 pb-2"
+        style={{ gridTemplateRows: 'repeat(7, 1fr)' }}
+      >
+        {NUMEROS.map((n) => {
+          const codigo = `${selecaoAtiva}-${n}`;
+          return (
+            <FigurinhaCard
+              key={codigo}
+              codigo={codigo}
+              quantidade={getQuantidade(codigo)}
+              onIncrementar={() => incrementar(codigo)}
+              onDecrementar={() => decrementar(codigo)}
+            />
+          );
+        })}
       </div>
     </section>
   );
