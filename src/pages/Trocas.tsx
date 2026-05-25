@@ -53,13 +53,8 @@ export default function Trocas({ colecao, onVoltar }: Props) {
     }
   }
 
-  async function colarDoClipboard() {
-    try {
-      const texto = await navigator.clipboard.readText();
-      processarTexto(texto);
-    } catch {
-      setMostrarColar(true);
-    }
+  function colarDoClipboard() {
+    setMostrarColar(true);
   }
 
   function handleImportArquivo(e: React.ChangeEvent<HTMLInputElement>) {
