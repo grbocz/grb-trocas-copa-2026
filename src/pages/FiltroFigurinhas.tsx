@@ -79,6 +79,37 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
     setRascunho({});
   }
 
+  function gerarTexto(): string {
+    const header = filtro === 'faltam'
+      ? `Faltam (Copa 2026) — ${totalCards} figurinha${totalCards !== 1 ? 's' : ''}:`
+      : `Repetidas (Copa 2026) — ${totalCards} figurinha${totalCards !== 1 ? 's' : ''}:`;
+
+    const linhas = secoes.map((secao) => {
+      const cod = secao.titulo.split(' ')[0];
+      const items = secao.codigos.map((codigo) => {
+        const num = codigo.split('-')[1];
+        if (filtro === 'repetidas') {
+          const qtd = colecao[codigo] ?? 0;
+          return `${num} (+${qtd - 1})`;
+        }
+        return num;
+      });
+      return `${cod}: ${items.join(', ')}`;
+    });
+
+    return `${header}\n${linhas.join('\n')}`;
+  }
+
+  function compartilhar() {
+    const texto = gerarTexto();
+    if (navigator.share) {
+      navigator.share({ text: texto, title: TITULOS[filtro] + ' — Copa 2026' })
+        .catch(() => navigator.clipboard?.writeText(texto));
+    } else {
+      navigator.clipboard?.writeText(texto);
+    }
+  }
+
   function toggleModo() {
     // Ao sair do modo edição com pendentes, descarta automaticamente
     if (modoEdicao && Object.keys(rascunho).length > 0) {
@@ -127,6 +158,17 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
             <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
             <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
           </div>
+
+          {/* Botão compartilhar — só para faltam e repetidas */}
+          {(filtro === 'faltam' || filtro === 'repetidas') && secoes.length > 0 && (
+            <button
+              onClick={compartilhar}
+              className="flex-none w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 text-base transition-colors"
+              title="Compartilhar lista"
+            >
+              ↑
+            </button>
+          )}
 
           {/* Switch Leitura / Edição */}
           <div className="flex-none flex items-center gap-1.5">
