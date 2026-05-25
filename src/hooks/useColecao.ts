@@ -93,10 +93,10 @@ export function useColecao() {
       colecao: state.colecao,
     };
     const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
+    const blob = new Blob([json], { type: 'text/plain' });
     const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.json`;
 
-    const file = new File([blob], filename, { type: 'application/json' });
+    const file = new File([blob], filename, { type: 'text/plain' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       navigator
         .share({ files: [file], title: 'Minha coleção Copa 2026' })
