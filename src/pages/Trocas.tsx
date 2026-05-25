@@ -39,14 +39,17 @@ export default function Trocas({ colecao, onVoltar }: Props) {
 
   function processarTexto(texto: string) {
     try {
-      const data = JSON.parse(texto.trim()) as ColecaoImportada;
+      const inicio = texto.indexOf('{');
+      const fim = texto.lastIndexOf('}');
+      if (inicio === -1 || fim === -1) throw new Error();
+      const data = JSON.parse(texto.slice(inicio, fim + 1)) as ColecaoImportada;
       if (!data.colecao || !data.nome) throw new Error();
       setImportada(data);
       setErro('');
       setMostrarColar(false);
       setTextoColar('');
     } catch {
-      setErro('Texto inválido. Cole exatamente o texto enviado pelo amigo.');
+      setErro('Texto inválido. Cole o texto enviado pelo amigo.');
     }
   }
 
