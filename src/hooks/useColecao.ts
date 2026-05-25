@@ -96,8 +96,8 @@ export function useColecao() {
     const blob = new Blob([json], { type: 'application/json' });
     const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.json`;
 
-    if (navigator.share) {
-      const file = new File([blob], filename, { type: 'application/json' });
+    const file = new File([blob], filename, { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
       navigator
         .share({ files: [file], title: 'Minha coleção Copa 2026' })
         .catch(() => downloadFile(blob, filename));
