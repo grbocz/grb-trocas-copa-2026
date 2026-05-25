@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { colecaoParaCompacto } from '../data/album';
 
 const STORAGE_KEY = 'trocas-copa-2026';
 
@@ -18,6 +17,17 @@ function loadFromStorage(): ColecaoState {
     // ignore parse errors
   }
   return defaultState;
+}
+
+function downloadFile(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 export function useColecao() {
@@ -63,21 +73,36 @@ export function useColecao() {
 
   const exportar = useCallback(() => {
     const nomeExport = state.nome.trim() || 'sem_nome';
+    const agora = new Date();
+    const p = (n: number) => String(n).padStart(2, '0');
+    const dia  = p(agora.getDate());
+    const mes  = p(agora.getMonth() + 1);
+    const ano  = agora.getFullYear();
+    const hora = p(agora.getHours());
+    const min  = p(agora.getMinutes());
+    const seg  = p(agora.getSeconds());
+
+    const exportadoEm = `${dia}/${mes}/${ano} ${hora}:${min}:${seg}`;
+    const dataArquivo = `${dia}-${mes}-${ano}`;
+    const horaArquivo = `${hora}h${min}`;
 
     const data = {
-      n: nomeExport,
-      v: '3',
-      c: colecaoParaCompacto(state.colecao),
+      nome: nomeExport,
+      versao: '1',
+      exportadoEm,
+      colecao: state.colecao,
     };
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'text/plain' });
+    const filename = `colecao_${nomeExport}_${dataArquivo}_${horaArquivo}.txt`;
+    const file = new File([blob], filename, { type: 'text/plain' });
 
-    const texto = JSON.stringify(data);
-
-    if (navigator.share) {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
       navigator
-        .share({ text: texto, title: `Coleção Copa 2026 - ${nomeExport}` })
-        .catch(() => navigator.clipboard?.writeText(texto));
+        .share({ files: [file], title: 'Minha coleção Copa 2026' })
+        .catch(() => downloadFile(blob, filename));
     } else {
-      navigator.clipboard?.writeText(texto);
+      downloadFile(blob, filename);
     }
   }, [state]);
 

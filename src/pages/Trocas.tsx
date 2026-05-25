@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { SELECOES, compactoParaColecao } from '../data/album';
+import { SELECOES } from '../data/album';
 
 interface Props {
   colecao: Record<string, number>;
@@ -33,55 +33,28 @@ export default function Trocas({ colecao, onVoltar }: Props) {
   const [importada, setImportada] = useState<ColecaoImportada | null>(null);
   const [erro, setErro] = useState('');
   const [copiado, setCopiado] = useState('');
-  const [mostrarColar, setMostrarColar] = useState(false);
-  const [textoColar, setTextoColar] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function processarTexto(texto: string) {
-    try {
-      const inicio = texto.indexOf('{');
-      const fim = texto.lastIndexOf('}');
-      if (inicio === -1 || fim === -1) throw new Error();
-      const raw = JSON.parse(texto.slice(inicio, fim + 1));
-
-      let nome: string;
-      let colecao: Record<string, number>;
-
-      if (raw.n && raw.c) {
-        // formato compacto v3
-        nome = raw.n;
-        colecao = compactoParaColecao(raw.c);
-      } else if (raw.nome && raw.colecao) {
-        // formato antigo
-        nome = raw.nome;
-        colecao = raw.colecao;
-      } else {
-        throw new Error();
-      }
-
-      setImportada({ nome, versao: raw.v ?? raw.versao ?? '1', colecao });
-      setErro('');
-      setMostrarColar(false);
-      setTextoColar('');
-    } catch {
-      setErro('Texto inválido. Cole o texto enviado pelo amigo.');
-    }
-  }
-
-  function colarDoClipboard() {
-    setMostrarColar(true);
-  }
-
-  function handleImportArquivo(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 100_000) {
-      setErro('Arquivo muito grande.');
+      setErro('Arquivo muito grande. Use um arquivo exportado pelo app.');
       e.target.value = '';
       return;
     }
     const reader = new FileReader();
-    reader.onload = (ev) => processarTexto(ev.target?.result as string);
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string) as ColecaoImportada;
+        if (!data.colecao || !data.nome) throw new Error('Formato inválido');
+        setImportada(data);
+        setErro('');
+      } catch {
+        setErro('Arquivo inválido. Use um arquivo exportado pelo app.');
+        setImportada(null);
+      }
+    };
     reader.readAsText(file);
     e.target.value = '';
   }
@@ -129,57 +102,41 @@ export default function Trocas({ colecao, onVoltar }: Props) {
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <h2 className="text-sm font-bold text-gray-700 mb-3">
-            {importada ? `Coleção de ${importada.nome}` : 'Importar coleção do amigo'}
+            Importar coleção do amigo
           </h2>
-
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".json,.txt"
+            onChange={handleImport}
+            className="hidden"
+          />
           <button
-            onClick={colarDoClipboard}
+            onClick={() => inputRef.current?.click()}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-3 text-sm font-semibold active:opacity-80 transition-colors"
           >
-            {importada ? 'Colar nova coleção' : 'Colar texto copiado'}
+            {importada
+              ? `Reimportar (atual: ${importada.nome})`
+              : 'Selecionar arquivo .txt'}
           </button>
-
-          {mostrarColar && (
-            <div className="mt-3 space-y-2">
-              <p className="text-xs text-gray-500">Cole aqui o texto recebido do amigo:</p>
-              <textarea
-                className="w-full border border-gray-300 rounded-lg p-2 text-xs font-mono h-24 resize-none focus:outline-none focus:border-blue-400"
-                placeholder='{"nome":"João","versao":"1",...}'
-                value={textoColar}
-                onChange={(e) => setTextoColar(e.target.value)}
-              />
-              <button
-                onClick={() => processarTexto(textoColar)}
-                disabled={!textoColar.trim()}
-                className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-semibold disabled:opacity-40 active:opacity-80"
-              >
-                Importar
-              </button>
-            </div>
-          )}
-
           {erro && <p className="text-red-500 text-xs mt-2">{erro}</p>}
           {importada && !erro && (
             <p className="text-green-600 text-xs mt-2 font-medium">
               Coleção de <strong>{importada.nome}</strong> carregada
             </p>
           )}
-
-          <input ref={inputRef} type="file" accept=".json,.txt" onChange={handleImportArquivo} className="hidden" />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="mt-2 w-full text-gray-400 text-xs py-1 active:opacity-60"
-          >
-            ou importar arquivo
-          </button>
         </div>
 
         {importada && (
           <>
             {nenhuma && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
-                <p className="text-yellow-700 text-sm font-medium">Nenhuma troca possível por enquanto</p>
-                <p className="text-yellow-600 text-xs mt-1">Continuem marcando as figurinhas!</p>
+                <p className="text-yellow-700 text-sm font-medium">
+                  Nenhuma troca possível por enquanto
+                </p>
+                <p className="text-yellow-600 text-xs mt-1">
+                  Continuem marcando as figurinhas!
+                </p>
               </div>
             )}
 
@@ -203,7 +160,9 @@ export default function Trocas({ colecao, onVoltar }: Props) {
               </div>
               {eleTem.length > 0 ? (
                 <>
-                  <p className="text-[11px] text-gray-600 leading-relaxed">{eleTem.join(', ')}</p>
+                  <p className="text-[11px] text-gray-600 leading-relaxed">
+                    {eleTem.join(', ')}
+                  </p>
                   <p className="text-[10px] text-green-600 mt-1.5 font-medium">
                     {eleTem.length} figurinha{eleTem.length !== 1 ? 's' : ''}
                   </p>
@@ -233,7 +192,9 @@ export default function Trocas({ colecao, onVoltar }: Props) {
               </div>
               {voceTem.length > 0 ? (
                 <>
-                  <p className="text-[11px] text-gray-600 leading-relaxed">{voceTem.join(', ')}</p>
+                  <p className="text-[11px] text-gray-600 leading-relaxed">
+                    {voceTem.join(', ')}
+                  </p>
                   <p className="text-[10px] text-blue-600 mt-1.5 font-medium">
                     {voceTem.length} figurinha{voceTem.length !== 1 ? 's' : ''}
                   </p>
@@ -247,8 +208,9 @@ export default function Trocas({ colecao, onVoltar }: Props) {
 
         {!importada && (
           <div className="text-center py-10">
+            <div className="text-4xl mb-3">📂</div>
             <p className="text-gray-400 text-sm">
-              Peça para o amigo exportar e te enviar no WhatsApp.{'\n'}Depois cole aqui.
+              Importe o arquivo de um amigo para ver as trocas possíveis
             </p>
           </div>
         )}
