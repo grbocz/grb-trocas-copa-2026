@@ -1,0 +1,92 @@
+<svg width="512" height="512" viewBox="90 90 500 500" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Ícone app Trocas Copa 2026</title>
+  <desc>Campo de futebol com quatro figurinhas e setas de troca por cima</desc>
+
+  <defs>
+    <clipPath id="clip-campo">
+      <rect x="90" y="90" width="500" height="500" rx="80"/>
+    </clipPath>
+    <marker id="ap" viewBox="0 0 20 20" refX="14" refY="10" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M3 3 L17 10 L3 17" fill="none" stroke="#0A0A0A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect x="90" y="90" width="500" height="500" fill="#1B5E20"/>
+  <g clip-path="url(#clip-campo)">
+    <rect x="90"  y="90" width="56" height="500" fill="#1E6B23"/>
+    <rect x="202" y="90" width="56" height="500" fill="#1E6B23"/>
+    <rect x="314" y="90" width="56" height="500" fill="#1E6B23"/>
+    <rect x="426" y="90" width="56" height="500" fill="#1E6B23"/>
+    <rect x="538" y="90" width="52" height="500" fill="#1E6B23"/>
+    <line x1="90" y1="340" x2="590" y2="340" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <rect x="108" y="108" width="464" height="464" rx="4" fill="none" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <circle cx="340" cy="340" r="80" fill="none" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <circle cx="340" cy="340" r="5" fill="white" opacity="0.9"/>
+    <rect x="215" y="108" width="250" height="110" rx="2" fill="none" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <rect x="270" y="108" width="140" height="55" rx="2" fill="none" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <circle cx="340" cy="183" r="4" fill="white" opacity="0.9"/>
+    <rect x="215" y="462" width="250" height="110" rx="2" fill="none" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <rect x="270" y="517" width="140" height="55" rx="2" fill="none" stroke="white" stroke-width="3.5" opacity="0.9"/>
+    <circle cx="340" cy="497" r="4" fill="white" opacity="0.9"/>
+    <rect x="295" y="98" width="90" height="14" rx="2" fill="none" stroke="white" stroke-width="3" opacity="0.7"/>
+    <rect x="295" y="568" width="90" height="14" rx="2" fill="none" stroke="white" stroke-width="3" opacity="0.7"/>
+  </g>
+
+  <!-- FIGURINHA 1: superior esquerdo BRA -->
+  <g transform="translate(168, 200) rotate(-8)">
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="white"/>
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="none" stroke="#FFD700" stroke-width="4"/>
+    <rect x="-45" y="-80" width="90" height="86" rx="5" fill="#009C3B"/>
+    <ellipse cx="0" cy="-48" rx="18" ry="18" fill="#FAEBD7"/>
+    <ellipse cx="0" cy="-48" rx="12" ry="12" fill="#D4956A"/>
+    <rect x="-20" y="-32" width="40" height="34" rx="4" fill="#FDEF42"/>
+    <rect x="-45" y="14" width="90" height="20" rx="4" fill="#1565C0"/>
+    <text x="0" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="500" font-family="sans-serif">BRA-7</text>
+  </g>
+
+  <!-- FIGURINHA 2: superior direito ARG -->
+  <g transform="translate(512, 195) rotate(9)">
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="white"/>
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="none" stroke="#75AADB" stroke-width="4"/>
+    <rect x="-45" y="-80" width="90" height="86" rx="5" fill="#74ACDF"/>
+    <ellipse cx="0" cy="-48" rx="18" ry="18" fill="#FAEBD7"/>
+    <ellipse cx="0" cy="-48" rx="12" ry="12" fill="#C68642"/>
+    <rect x="-20" y="-32" width="40" height="34" rx="4" fill="white"/>
+    <rect x="-45" y="14" width="90" height="20" rx="4" fill="#003DA5"/>
+    <text x="0" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="500" font-family="sans-serif">ARG-10</text>
+  </g>
+
+  <!-- FIGURINHA 3: inferior esquerdo GER -->
+  <g transform="translate(172, 478) rotate(7)">
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="white"/>
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="none" stroke="#333" stroke-width="4"/>
+    <rect x="-45" y="-80" width="90" height="86" rx="5" fill="#1A1A1A"/>
+    <ellipse cx="0" cy="-48" rx="18" ry="18" fill="#FAEBD7"/>
+    <ellipse cx="0" cy="-48" rx="12" ry="12" fill="#D4956A"/>
+    <rect x="-20" y="-32" width="40" height="34" rx="4" fill="#DD0000"/>
+    <rect x="-45" y="14" width="90" height="20" rx="4" fill="#1A1A1A"/>
+    <text x="0" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="500" font-family="sans-serif">GER-9</text>
+  </g>
+
+  <!-- FIGURINHA 4: inferior direito FRA -->
+  <g transform="translate(508, 482) rotate(-7)">
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="white"/>
+    <rect x="-55" y="-90" width="110" height="148" rx="9" fill="none" stroke="#002395" stroke-width="4"/>
+    <rect x="-45" y="-80" width="90" height="86" rx="5" fill="#002395"/>
+    <ellipse cx="0" cy="-48" rx="18" ry="18" fill="#FAEBD7"/>
+    <ellipse cx="0" cy="-48" rx="12" ry="12" fill="#8D5524"/>
+    <rect x="-20" y="-32" width="40" height="34" rx="4" fill="#ED2939"/>
+    <rect x="-45" y="14" width="90" height="20" rx="4" fill="#ED2939"/>
+    <text x="0" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="500" font-family="sans-serif">FRA-11</text>
+  </g>
+
+  <!-- SETAS POR CIMA -->
+  <path d="M 228 152 C 270 100, 400 100, 453 150" fill="none" stroke="#0A0A0A" stroke-width="7" stroke-linecap="round" marker-end="url(#ap)"/>
+  <path d="M 560 218 C 608 300, 608 400, 558 462" fill="none" stroke="#0A0A0A" stroke-width="7" stroke-linecap="round" marker-end="url(#ap)"/>
+  <path d="M 454 540 C 400 590, 268 590, 218 536" fill="none" stroke="#0A0A0A" stroke-width="7" stroke-linecap="round" marker-end="url(#ap)"/>
+  <path d="M 120 458 C 72 380, 72 268, 122 198" fill="none" stroke="#0A0A0A" stroke-width="7" stroke-linecap="round" marker-end="url(#ap)"/>
+  <path d="M 222 248 C 280 320, 360 380, 456 434" fill="none" stroke="#0A0A0A" stroke-width="7" stroke-linecap="round" marker-end="url(#ap)"/>
+  <path d="M 458 248 C 400 310, 320 380, 228 434" fill="none" stroke="#0A0A0A" stroke-width="7" stroke-linecap="round" marker-end="url(#ap)"/>
+
+  <rect x="90" y="90" width="500" height="500" rx="80" fill="none" stroke="#145214" stroke-width="3"/>
+</svg>

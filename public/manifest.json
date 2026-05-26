@@ -4,8 +4,8 @@
   "description": "Gerencie e troque figurinhas da Copa do Mundo 2026",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "background_color": "#1B5E20",
+  "theme_color": "#1B5E20",
   "icons": [
     {
       "src": "/icon-192.png",
