@@ -113,6 +113,10 @@ export default function Home({ colecao, onMinhaColecao, onTrocas, onFiltro, onRe
             </p>
           )}
         </div>
+
+        <div className="flex justify-center py-4">
+          <img src="/icon-trocas-copa2026.svg" alt="" className="w-40 h-40 opacity-20" />
+        </div>
       </div>
     </div>
   );
