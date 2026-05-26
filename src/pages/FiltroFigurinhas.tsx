@@ -83,7 +83,9 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
   function gerarTexto(): string {
     const header = filtro === 'faltam'
       ? `Faltam (Copa 2026) — ${totalCards} figurinha${totalCards !== 1 ? 's' : ''}:`
-      : `Repetidas (Copa 2026) — ${totalCards} figurinha${totalCards !== 1 ? 's' : ''}:`;
+      : filtro === 'repetidas'
+      ? `Repetidas (Copa 2026) — ${totalCards} figurinha${totalCards !== 1 ? 's' : ''}:`
+      : `Já tenho (Copa 2026) — ${totalCards} figurinha${totalCards !== 1 ? 's' : ''}:`;
 
     const linhas = secoes.map((secao) => {
       const cod = secao.titulo.split(' ')[0];
@@ -154,8 +156,8 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
             ←
           </button>
 
-          {/* Botão compartilhar — só para faltam e repetidas */}
-          {(filtro === 'faltam' || filtro === 'repetidas') && secoes.length > 0 && (
+          {/* Botão compartilhar */}
+          {secoes.length > 0 && (
             <button
               onClick={compartilhar}
               className="flex-none w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 active:bg-white/10 transition-colors"
