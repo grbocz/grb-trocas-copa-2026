@@ -87,14 +87,7 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
 
     const linhas = secoes.map((secao) => {
       const cod = secao.titulo.split(' ')[0];
-      const items = secao.codigos.map((codigo) => {
-        const num = codigo.split('-')[1];
-        if (filtro === 'repetidas') {
-          const qtd = colecao[codigo] ?? 0;
-          return `${num} (+${qtd - 1})`;
-        }
-        return num;
-      });
+      const items = secao.codigos.map((codigo) => codigo.split('-')[1]);
       return `${cod}: ${items.join(', ')}`;
     });
 
@@ -179,7 +172,7 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
           <div className="leading-tight flex-1 min-w-0 text-center">
             <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
             {filtro === 'repetidas'
-              ? <div className="text-[10px] opacity-75">{totalCards} cód. · {totalFisico} no total</div>
+              ? <div className="text-[10px] opacity-75">{totalCards} cód. · {totalFisico} para trocar</div>
               : <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
             }
           </div>
