@@ -143,7 +143,7 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
 
   const totalCards = secoes.reduce((acc, s) => acc + s.codigos.length, 0);
   const totalFisico = filtro === 'repetidas'
-    ? secoes.reduce((acc, s) => acc + s.codigos.reduce((a, c) => a + (colecao[c] ?? 0), 0), 0)
+    ? secoes.reduce((acc, s) => acc + s.codigos.reduce((a, c) => a + ((colecao[c] ?? 0) - 1), 0), 0)
     : 0;
   const totalAlteracoes = Object.keys(rascunho).length;
   const temAlteracoes = modoEdicao && totalAlteracoes > 0;
