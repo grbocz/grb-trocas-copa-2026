@@ -22,10 +22,10 @@ Dois colecionadores precisam descobrir quais figurinhas podem trocar entre si. C
 - localStorage (persistência local da coleção do usuário)
 - Sem backend, sem autenticação, sem Supabase
 
-## Hospedagem
-- Vercel — https://grb-trocas-copa-2026.vercel.app/
-- Repositório GitHub: `grbocz/grb-trocas-copa-2026`
-- Deploy automático a cada push no master
+## Hospedagem e distribuição
+- **Web (PWA):** Vercel — https://grb-trocas-copa-2026.vercel.app/ (deploy automático a cada push no master)
+- **Android (APK):** gerado via Capacitor + Android Studio (ver `COMO_GERAR_APK.md`)
+- **Repositório GitHub:** `grbocz/grb-trocas-copa-2026`
 
 ---
 
@@ -92,74 +92,68 @@ Também há figurinhas especiais (FWC e CC) implementadas.
 
 ## Tela Home
 
-Ponto de entrada. Botões para:
-- **Minha Coleção** — ir para a tela de marcação
-- **Ver Trocas** — ir para a tela de trocas
-- **Restaurar backup** — importar `.txt` ou `.json` exportado anteriormente para sobrescrever a coleção local (com confirmação)
-- Atalhos para as telas de filtro: **Já tenho**, **Faltam**, **Repetidas**
+Ponto de entrada. Contém:
+- Header com título
+- Card de progresso (% da coleção completa)
+- Grid 3 colunas: Já tenho / Faltam / Repetidas (atalhos para filtros)
+- Botão **Minha Coleção**
+- Botão **Ver Trocas**
+- Botão **Restaurar backup** (importa `.txt` ou `.json`, pede confirmação)
+- Ícone decorativo (SVG) ao fundo
 
 ---
 
 ## Tela Minha Coleção
 
-### Estrutura geral
-- Header fixo: título "Minha coleção" + "Copa 2026" + botão Exportar + botão Ver Trocas
-- Corpo: duas colunas lado a lado
-- Footer: botão Exportar e botão Ver Trocas
-
-### Coluna esquerda (~130px)
-- Toggle no topo: **Grupos** | **A–Z**
-- Grid de 2 colunas com cards de seleção
-- Separadores "Grupo A", "Grupo B" etc. na ordenação por grupos
-- Card ativo com borda/fundo azul
-- Scroll vertical independente
-
-### Coluna direita
-- Subtítulo: "BRA-1 até BRA-20"
-- Legenda: 0 = falta (vermelho) | 1 = tenho (verde) | 2+ = repetida (azul)
-- Grid de 3 colunas, 20 cards por seleção
-- Cada card: código, contador, botões − e +
-- Cores do card refletem o status
+### Estrutura
+- Header: título + botão Exportar + botão Ver Trocas
+- Duas colunas lado a lado:
+  - **Esquerda (~130px):** toggle Grupos/A-Z, grid 2 colunas de seleções com separadores de grupo
+  - **Direita:** subtítulo com range (BRA-1 até BRA-20), legenda de cores, grid 3×20 cards com +/−
 
 ### Botão Exportar
 - Gera arquivo `.txt` com JSON da coleção
-- Usa `navigator.canShare({ files: [file] })` com `type: 'text/plain'`
+- `navigator.canShare({ files: [file] })` com `type: 'text/plain'`
 - Fallback: download direto
 
 ---
 
 ## Telas de Filtro (Já tenho / Faltam / Repetidas)
 
-Acessadas pela Home. Cada tela exibe apenas as figurinhas do status correspondente.
-
 ### Header
 - Botão voltar
-- Botão compartilhar (ícone SVG) — só em Faltam e Repetidas; gera texto agrupado por país (ex: `BRA: 3, 7, 15`) e abre share nativo
+- Botão compartilhar (SVG) — só em Faltam e Repetidas; gera texto agrupado por país (ex: `BRA: 3, 7, 15`) sem quantidades
 - Título centralizado
-- Em **Repetidas**: subtítulo mostra `X cód. · Y para trocar` onde Y é a soma dos extras (qtd − 1)
+- **Repetidas:** subtítulo `X cód. · Y para trocar` (Y = soma dos extras, qtd − 1)
 - Toggle **Grupos | A–Z**
 - Toggle **Leitura | Edição**
 
 ### Modo Leitura
 - Grid 5 colunas, cards compactos
-- Em Repetidas: mostra `+N` (extras) em vez do contador absoluto
+- Repetidas: mostra `+N` extras em vez do contador absoluto
 
 ### Modo Edição
 - Grid 3 colunas com botões +/−
-- Alterações ficam em rascunho (marcadas em laranja)
-- Footer com botões Descartar / Confirmar
+- Rascunho com marcação laranja; footer Descartar / Confirmar
 
 ---
 
 ## Tela de Trocas
 
-### Fluxo
-1. Botão para importar arquivo `.txt` ou `.json` do amigo
-2. Após importação, exibe dois blocos:
-   - **Ele tem → você precisa**: contador_dele > 1 E contador_seu = 0
-   - **Você tem → ele precisa**: contador_seu > 1 E contador_dele = 0
-3. Cada bloco lista os códigos ordenados + contagem
-4. Botão "Copiar lista" em cada bloco
+1. Botão para importar `.txt` ou `.json` do amigo
+2. Exibe dois blocos:
+   - **Ele tem → você precisa:** `contador_dele > 1 && contador_seu = 0`
+   - **Você tem → ele precisa:** `contador_seu > 1 && contador_dele = 0`
+3. Botão "Copiar lista" em cada bloco
+
+---
+
+## Ícones e PWA
+
+- `public/icon-trocas-copa2026.svg` — ícone original (viewBox ajustado para sem margem)
+- `public/icon-192.png` e `public/icon-512.png` — gerados do SVG
+- `public/manifest.json` — PWA com `background_color` e `theme_color` `#1B5E20`
+- `index.html` — links para manifest, favicon e apple-touch-icon
 
 ---
 
@@ -176,37 +170,34 @@ Acessadas pela Home. Cada tela exibe apenas as figurinhas do status corresponden
   }
 }
 ```
-Figurinhas com contador 0 são omitidas. Ausente no JSON = 0.
+Figurinhas com contador 0 são omitidas. Ausente = 0.
 
 ---
 
 ## Persistência (localStorage)
 ```json
-{
-  "nome": "Gustavo",
-  "colecao": { "BRA-1": 2, "BRA-2": 1 }
-}
+{ "nome": "Gustavo", "colecao": { "BRA-1": 2, "BRA-2": 1 } }
 ```
 
 ---
 
 ## Regras de negócio
-- Contador mínimo = 0 (botão − não vai abaixo de zero)
-- Figurinha ausente no JSON importado = contador 0
-- Lista de trocas ordenada alfabética/numericamente por código
-- "Nenhuma troca possível" se nenhum dos lados tem repetidas
+- Contador mínimo = 0
+- Figurinha ausente no JSON importado = 0
+- Lista de trocas ordenada alfabética/numericamente
+- "Nenhuma troca possível" se nenhum lado tem repetidas
 
 ---
 
 ## Observações técnicas
 - Mobile-first, viewport ~360px
-- Web Share API: usar `canShare({ files })` com `type: 'text/plain'` para abrir share nativo
+- Web Share API: `canShare({ files })` com `type: 'text/plain'`
+- `src/data/album.ts` exporta `TODAS_FIGURINHAS`, `colecaoParaCompacto`, `compactoParaColecao`
 - `.claude/` no `.gitignore`
 - Sem variáveis de ambiente
-- `src/data/album.ts` exporta `TODAS_FIGURINHAS`, `colecaoParaCompacto`, `compactoParaColecao` (utilitários de codificação compacta, disponíveis para uso futuro)
 
 ## Caminhos Windows
-- Desktop home: `C:\Users\GRBoc\Desktop`
+- Projeto: `C:\Users\GRBoc\Desktop\grb-trocas-copa-2026`
 - Terminal: CMD ou PowerShell
 
 ---
