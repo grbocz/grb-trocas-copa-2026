@@ -122,7 +122,7 @@ Ponto de entrada. Contém:
 
 ### Header
 - Botão voltar
-- Botão compartilhar (SVG) — só em Faltam e Repetidas; gera texto agrupado por país (ex: `BRA: 3, 7, 15`) sem quantidades
+- Botão compartilhar (SVG) — presente nas três telas (Já tenho, Faltam e Repetidas); gera texto agrupado por país (ex: `BRA: 3, 7, 15`) sem quantidades
 - Título centralizado
 - **Repetidas:** subtítulo `X cód. · Y para trocar` (Y = soma dos extras, qtd − 1)
 - Toggle **Grupos | A–Z**
@@ -186,6 +186,12 @@ Figurinhas com contador 0 são omitidas. Ausente = 0.
 - Figurinha ausente no JSON importado = 0
 - Lista de trocas ordenada alfabética/numericamente
 - "Nenhuma troca possível" se nenhum lado tem repetidas
+
+## Escala de cores dos cards
+- **0** → vermelho claro (`bg-red-200 border-red-600`)
+- **1** → verde claro (`bg-green-200 border-green-600`)
+- **2** → azul claro (`bg-blue-200 border-blue-600`)
+- **≥ 3** → azul escuro (`bg-blue-400 border-blue-800`) — indica múltiplas repetidas
 
 ---
 
