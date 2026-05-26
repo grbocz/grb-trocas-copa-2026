@@ -38,13 +38,15 @@ function matchFiltro(quantidade: number, filtro: FiltroTipo): boolean {
 function corCard(qtd: number) {
   if (qtd === 0) return 'bg-red-200 border-red-600';
   if (qtd === 1) return 'bg-green-200 border-green-600';
-  return 'bg-blue-200 border-blue-600';
+  if (qtd === 2) return 'bg-blue-200 border-blue-600';
+  return 'bg-blue-400 border-blue-800';
 }
 
 function corContador(qtd: number) {
   if (qtd === 0) return 'text-red-700';
   if (qtd === 1) return 'text-green-700';
-  return 'text-blue-700';
+  if (qtd === 2) return 'text-blue-700';
+  return 'text-blue-900';
 }
 
 interface Secao {

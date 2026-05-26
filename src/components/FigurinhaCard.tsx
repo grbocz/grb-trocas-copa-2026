@@ -11,14 +11,18 @@ export default function FigurinhaCard({ codigo, quantidade, onIncrementar, onDec
       ? 'bg-red-200 border-red-600'
       : quantidade === 1
         ? 'bg-green-200 border-green-600'
-        : 'bg-blue-200 border-blue-600';
+        : quantidade === 2
+          ? 'bg-blue-200 border-blue-600'
+          : 'bg-blue-400 border-blue-800';
 
   const counterColor =
     quantidade === 0
       ? 'text-red-700'
       : quantidade === 1
         ? 'text-green-700'
-        : 'text-blue-700';
+        : quantidade === 2
+          ? 'text-blue-700'
+          : 'text-blue-900';
 
   return (
     <div className={`border rounded-lg flex flex-col items-center justify-between py-1 px-0.5 ${bgBorder}`}>
