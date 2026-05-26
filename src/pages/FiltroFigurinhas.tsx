@@ -55,6 +55,7 @@ interface Secao {
 export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVoltar }: Props) {
   const [rascunho, setRascunho] = useState<Record<string, number>>({});
   const [modoEdicao, setModoEdicao] = useState(false);
+  const [ordenacao, setOrdenacao] = useState<'grupos' | 'az'>('grupos');
 
   function getValor(codigo: string): number {
     return codigo in rascunho ? rascunho[codigo] : (colecao[codigo] ?? 0);
@@ -119,25 +120,31 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
   }
 
   const secoes = useMemo<Secao[]>(() => {
-    const resultado: Secao[] = [];
+    const selecaoSecs: Secao[] = [];
     for (const grupo of GRUPOS) {
       for (const selecao of SELECOES.filter((s) => s.grupo === grupo)) {
         const codigos = Array.from({ length: FIGURINHAS_POR_SELECAO }, (_, i) =>
           `${selecao.codigo}-${i + 1}`
         ).filter((c) => matchFiltro(colecao[c] ?? 0, filtro));
-        if (codigos.length > 0) resultado.push({ titulo: `${selecao.codigo} — ${selecao.nome}`, codigos });
+        if (codigos.length > 0) selecaoSecs.push({ titulo: `${selecao.codigo} — ${selecao.nome}`, codigos });
       }
     }
+    if (ordenacao === 'az') selecaoSecs.sort((a, b) => a.titulo.localeCompare(b.titulo));
+
+    const especiaisSecs: Secao[] = [];
     for (const especial of ESPECIAIS) {
       const codigos = especial.numeros
         .map((n) => `${especial.codigo}-${n}`)
         .filter((c) => matchFiltro(colecao[c] ?? 0, filtro));
-      if (codigos.length > 0) resultado.push({ titulo: especial.nome, codigos });
+      if (codigos.length > 0) especiaisSecs.push({ titulo: especial.nome, codigos });
     }
-    return resultado;
-  }, [filtro, colecao]);
+    return [...selecaoSecs, ...especiaisSecs];
+  }, [filtro, colecao, ordenacao]);
 
   const totalCards = secoes.reduce((acc, s) => acc + s.codigos.length, 0);
+  const totalFisico = filtro === 'repetidas'
+    ? secoes.reduce((acc, s) => acc + s.codigos.reduce((a, c) => a + (colecao[c] ?? 0), 0), 0)
+    : 0;
   const totalAlteracoes = Object.keys(rascunho).length;
   const temAlteracoes = modoEdicao && totalAlteracoes > 0;
   const vazio = VAZIOS[filtro];
@@ -171,7 +178,10 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
 
           <div className="leading-tight flex-1 min-w-0 text-center">
             <div className="text-xs font-bold tracking-wide">{TITULOS[filtro].toUpperCase()}</div>
-            <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
+            {filtro === 'repetidas'
+              ? <div className="text-[10px] opacity-75">{totalCards} cód. · {totalFisico} no total</div>
+              : <div className="text-[10px] opacity-75">{totalCards} figurinha{totalCards !== 1 ? 's' : ''}</div>
+            }
           </div>
 
           {/* Switch Leitura / Edição */}
@@ -197,6 +207,24 @@ export default function FiltroFigurinhas({ filtro, colecao, aplicarLote, onVolta
               {totalAlteracoes}
             </div>
           )}
+        </div>
+
+        {/* Toggle de ordenação */}
+        <div className="flex justify-center mt-1.5">
+          <div className="flex bg-white/20 rounded-full p-0.5">
+            <button
+              onClick={() => setOrdenacao('grupos')}
+              className={`px-3 py-0.5 rounded-full text-[10px] font-bold transition-colors ${ordenacao === 'grupos' ? 'bg-white text-gray-700' : 'text-white'}`}
+            >
+              Grupos
+            </button>
+            <button
+              onClick={() => setOrdenacao('az')}
+              className={`px-3 py-0.5 rounded-full text-[10px] font-bold transition-colors ${ordenacao === 'az' ? 'bg-white text-gray-700' : 'text-white'}`}
+            >
+              A–Z
+            </button>
+          </div>
         </div>
       </header>
 
